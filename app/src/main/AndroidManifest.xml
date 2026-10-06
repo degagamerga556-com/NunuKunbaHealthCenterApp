@@ -1,22 +1,200 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+package com.example.nunukunbahealthcenter
 
-    <application
-        android:allowBackup="true"
-        android:label="Nunu Kumba Health Center"
-        android:supportsRtl="true">
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+class MainActivity : ComponentActivity() {
 
-        </activity>
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    </application>
+        setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    HealthCenterApp()
+                }
+            }
+        }
+    }
+}
 
-</manifest>
+@Composable
+fun HealthCenterApp() {
+
+    var screen by remember { mutableStateOf("login") }
+
+    when (screen) {
+
+        "login" -> LoginScreen(
+            onLogin = {
+                screen = "dashboard"
+            }
+        )
+
+        "dashboard" -> DashboardScreen(
+            onPatientRegistration = {
+                screen = "patient"
+            }
+        )
+
+        "patient" -> PatientRegistrationScreen(
+            onBack = {
+                screen = "dashboard"
+            }
+        )
+    }
+}
+
+@Composable
+fun LoginScreen(
+    onLogin: () -> Unit
+) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Text(
+            text = "Nunu Kumba Health Center",
+            style = MaterialTheme.typography.headlineSmall
+        )
+
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Username") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        )
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
+        )
+
+        Button(
+            onClick = onLogin,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        ) {
+            Text("Login")
+        }
+    }
+}
+
+@Composable
+fun DashboardScreen(
+    onPatientRegistration: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Text(
+            text = "Dashboard",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Text(
+            text = "Nunu Kumba Health Center",
+            modifier = Modifier.padding(top = 8.dp)
+        )
+
+        Button(
+            onClick = onPatientRegistration,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp)
+        ) {
+            Text("Patient Registration")
+        }
+    }
+}
+
+@Composable
+fun PatientRegistrationScreen(
+    onBack: () -> Unit
+) {
+    var patientName by remember { mutableStateOf("") }
+    var insuranceCode by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
+    ) {
+
+        Text(
+            text = "Patient Registration",
+            style = MaterialTheme.typography.headlineSmall
+        )
+
+        OutlinedTextField(
+            value = patientName,
+            onValueChange = { patientName = it },
+            label = { Text("Patient Name") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        )
+
+        OutlinedTextField(
+            value = insuranceCode,
+            onValueChange = { insuranceCode = it },
+            label = { Text("Insurance Code") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
+        )
+
+        Button(
+            onClick = {
+                // Patient registration can be connected to database later
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+        ) {
+            Text("Register Patient")
+        }
+
+        Button(
+            onClick = onBack,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
+        ) {
+            Text("Back to Dashboard")
+        }
+    }
+}
